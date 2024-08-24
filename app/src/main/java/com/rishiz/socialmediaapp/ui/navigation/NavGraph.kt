@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.rishiz.institute.ui.AddLinkScreen
 import com.rishiz.institute.ui.InstituteScreen
 import com.rishiz.socialmediaapp.ui.Screens.MainScreen
@@ -22,12 +23,37 @@ fun NavGraph() {
         }
         composable<ScreenLinkList> {
             InstituteScreen(
-                navigation = {
-                    navController.navigate(ScreenAddLink)
+                navigation = { edit, it ->
+                    navController.navigate(
+                        ScreenAddLink(
+                            isEdit = edit,
+                            userId = it.userId,
+                            url = it.linkedin,
+                            icon = ""//it.icon is null for some post it is crashing
+                        )
+                    )
                 })
         }
         composable<ScreenAddLink> {
-            AddLinkScreen(navController = navController)
+            val arg = it.toRoute<ScreenAddLink>()
+            AddLinkScreen(
+                navController, navigate = {
+                    navController.navigate(ScreenLinkList) {
+                        popUpTo(
+                            ScreenAddLink(
+                                isEdit = false,
+                                userId = "",
+                                url = "",
+                                icon = ""
+                            )
+                        ) { inclusive = true }
+                    }
+                },
+                isEdit = arg.isEdit,
+                userId = arg.userId,
+                mediaUrl = arg.url,
+                mediaIcon = arg.icon
+            )
         }
     }
 
@@ -43,4 +69,5 @@ object ScreenUser
 object ScreenLinkList
 
 @Serializable
-object ScreenAddLink
+data class ScreenAddLink(val isEdit: Boolean, val userId: String, val url: String, var icon: String)
+

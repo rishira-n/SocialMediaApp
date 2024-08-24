@@ -2,6 +2,7 @@ package com.rishiz.user.ui.screens
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,9 +42,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.rishiz.user.R
 import com.rishiz.user.data.remote.response.NetworkResponse
 import com.rishiz.user.domain.model.SocialMediaLink
+import com.rishiz.user.ui.screens.components.CircleLoader
 import com.rishiz.user.viewmodel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +55,7 @@ fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
     val linkState by viewModel.linkState.collectAsState()
     var isLoading by remember { mutableStateOf(false) }
     var linkList = remember { emptyList<SocialMediaLink>() }
+
     val context = LocalContext.current
     Surface(
         modifier = Modifier
@@ -77,110 +81,111 @@ fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
             is NetworkResponse.Success -> {
                 isLoading = false
                 val response = linkState as NetworkResponse.Success
-                if (response.data.success) {
+                if (response.data.statusCode == 200) {
                     linkList = response.data.data!!
                 }
                 //Dummy Data
-                if (linkList.isEmpty()) {
-                    linkList = getDummySocialMediaLinks()
-                }
+//                if (linkList.isEmpty()) {
+//                  linkList = getDummySocialMediaLinks()
+//                }
 
             }
         }
-    }
-    Scaffold(topBar = {
-        TopAppBar(
-            title = { Text("User") }
-        )
-    }) { paddingValues ->
-        LazyColumn(modifier = Modifier.padding(paddingValues)) {
-            if (linkList.isNotEmpty()) {
-                items(linkList) {
-                    val painter = when (it.platform.lowercase()) {
-                        "linkedin" -> painterResource(R.drawable.linkedin)
-                        "snapchat" -> painterResource(R.drawable.snapchat)
-                        "facebook" -> painterResource(R.drawable.facebook)
-                        "skype" -> painterResource(R.drawable.skype)
-                        "instagram" -> painterResource(R.drawable.instagram)
-                        "whatsapp" -> painterResource(R.drawable.whatsapp)
-                        "youtube" -> painterResource(R.drawable.youtube)
-                        else -> painterResource(R.drawable.linkedin)
-                    }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp)
-                    ) {
-                        Image(
-                            painter = painter,
-                            contentDescription = "icons",
-                            modifier = Modifier.size(50.dp),
-                            contentScale = ContentScale.Crop
-                        )
-                        Spacer(Modifier.width(10.dp))
-                        Column(
-                            Modifier.padding(horizontal = 16.dp),
-                            verticalArrangement = Arrangement.Center
+        Scaffold(topBar = {
+            TopAppBar(
+                title = { Text("User") }
+            )
+        }) { paddingValues ->
+            LazyColumn(modifier = Modifier.padding(paddingValues)) {
+                if (linkList.isNotEmpty()) {
+                    items(linkList) {
+
+//                    if (linkList.isEmpty()) {
+//                        val painter = when (it.platform.lowercase()) {
+//                            "linkedin" -> painterResource(R.drawable.linkedin)
+//                            "snapchat" -> painterResource(R.drawable.snapchat)
+//                            "facebook" -> painterResource(R.drawable.facebook)
+//                            "skype" -> painterResource(R.drawable.skype)
+//                            "instagram" -> painterResource(R.drawable.instagram)
+//                            "whatsapp" -> painterResource(R.drawable.whatsapp)
+//                            "youtube" -> painterResource(R.drawable.youtube)
+//                            else -> painterResource(R.drawable.linkedin)
+//                        }
+//                    }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp)
                         ) {
-                            Text(
-                                text = it.platform,
-                                style = TextStyle(
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize
-                                )
+                            Image(
+//                            painter = if(it.icon.isEmpty()) else rememberAsyncImagePainter(model = it.icon),
+                                painter = rememberAsyncImagePainter(model = it.icon),
+                                contentDescription = "icons",
+                                modifier = Modifier.size(50.dp),
+                                contentScale = ContentScale.Crop
                             )
-                            Spacer(Modifier.height(2.dp))
-                            Text(
-                                text = it.userId,
-                                style = TextStyle(
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize
+                            Spacer(Modifier.width(10.dp))
+                            Column(
+                                Modifier.padding(horizontal = 16.dp),
+                                verticalArrangement = Arrangement.Center
+                            ) {
+
+                                Text(
+                                    text = it.linkedin,
+                                    style = TextStyle(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize
+                                    )
                                 )
-                            )
-                            Spacer(Modifier.height(2.dp))
-                            Text(
-                                modifier = Modifier.clickable {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it.url))
-                                    context.startActivity(intent)
-                                },
-                                text = it.url,
-                                style = TextStyle(
-                                    color = Color.Blue,
-                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize
+                                Spacer(Modifier.height(2.dp))
+                                Text(
+                                    text = it.userId,
+                                    style = TextStyle(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize
+                                    )
                                 )
-                            )
-                            Spacer(Modifier.height(5.dp))
-                            HorizontalDivider(Modifier.height(1.dp))
+                                Spacer(Modifier.height(2.dp))
+                                Text(
+                                    modifier = Modifier.clickable {
+                                        val intent =
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(it.linkedin))
+                                        context.startActivity(intent)
+                                    },
+                                    text = it.linkedin,
+                                    style = TextStyle(
+                                        color = Color.Blue,
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize
+                                    )
+                                )
+                                Spacer(Modifier.height(5.dp))
+                                HorizontalDivider(Modifier.height(1.dp))
+                            }
                         }
                     }
                 }
             }
+
         }
 
-    }
-
-    if (isLoading) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+        if (isLoading) {
+            CircleLoader()
         }
     }
 }
 
-fun getDummySocialMediaLinks(): List<SocialMediaLink> {
-    return listOf(
-        SocialMediaLink(userId = "user1", platform = "Facebook", url = "http://facebook.com/user1"),
-        SocialMediaLink(userId = "user1", platform = "Snapchat", url = "http://snapchat.com/user1"),
-        SocialMediaLink(
-            userId = "user2",
-            platform = "Instagram",
-            url = "http://instagram.com/user2"
-        ),
-        SocialMediaLink(userId = "user3", platform = "LinkedIn", url = "http://linkedin.com/user3"),
-        SocialMediaLink(userId = "user4", platform = "YouTube", url = "http://youtube.com/user4")
-    )
-}
+//fun getDummySocialMediaLinks(): List<SocialMediaLink> {
+//    return listOf(
+//        SocialMediaLink(userId = "user1", platform = "Facebook", url = "http://facebook.com/user1",""),
+//        SocialMediaLink(userId = "user1", platform = "Snapchat", url = "http://snapchat.com/user1",""),
+//        SocialMediaLink(
+//            userId = "user2",
+//            platform = "Instagram",
+//            url = "http://instagram.com/user2",""
+//        ),
+//        SocialMediaLink(userId = "user3", platform = "LinkedIn", url = "http://linkedin.com/user3",""),
+//        SocialMediaLink(userId = "user4", platform = "YouTube", url = "http://youtube.com/user4","")
+//    )
+//}

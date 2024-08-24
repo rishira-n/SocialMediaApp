@@ -1,7 +1,7 @@
 package com.rishiz.user.domain.model
 
 data class SocialMediaLinkRes(
-    val success: Boolean,
+    val statusCode: Int,
     val message: String,
     val data: List<SocialMediaLink>?
 )

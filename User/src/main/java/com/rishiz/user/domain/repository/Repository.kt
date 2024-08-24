@@ -11,7 +11,6 @@ import javax.inject.Inject
 class Repository @Inject constructor(
     private val api: ApiService,
 ) {
-
     suspend fun getSocialMediaLinkApi(): Flow<NetworkResponse<SocialMediaLinkRes>> {
         return flow {
             emit(NetworkResponse.Loading)
@@ -20,14 +19,9 @@ class Repository @Inject constructor(
             if (response.isSuccessful && response.body() != null) {
                 emit(NetworkResponse.Success(response.body()!!))
             } else {
-                //this will navigate to catch block
-                throw Exception()
+                emit(NetworkResponse.Error(response.code().toString()+":"+response.message()))
             }
         }.catch { e ->
-            /*
-            it is giving null pointer exception error
-            emit(BaseResponseState.Error(AppUtil.returnErrorMsg( context,e)!!))
-            */
             e.localizedMessage?.let { NetworkResponse.Error(it) }?.let { emit(it) }
         }
     }
