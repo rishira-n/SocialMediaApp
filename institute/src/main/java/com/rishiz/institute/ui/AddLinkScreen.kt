@@ -91,7 +91,6 @@ fun AddLinkScreen(
             // Convert the URI to MultipartBody.Part
             imageMultipart = uriToMultipart(it, context, "icon")
         }
-
     }
 
     when (addState) {
@@ -251,8 +250,7 @@ fun AddLinkScreen(
                             .padding(10.dp)
                             .clickable {
                                 launcher.launch("image/*")
-                            }
-                    )
+                            })
                 }
             }
             Spacer(Modifier.height(30.dp))

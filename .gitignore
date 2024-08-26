@@ -1,16 +1,62 @@
-*.iml
-.gradle
+# Kotlin
+*.kt
+*.kts
+
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file (sdk location)
 local.properties
-.idea
-.idea/caches
+
+# Gradle caches and project-specific files
+**/build/
+**/local.properties
+**/out/
+**/*.iml
+
+# Android Studio generated files and folders
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+output.json
+.idea/
+*.iml
 .idea/libraries
 .idea/modules.xml
 .idea/workspace.xml
 .idea/navEditor.xml
-.idea/assetWizardSettings.xml
-.DS_Store
-build
-captures
-.externalNativeBuild
-.cxx
+.idea/tasks.xml
+.idea/caches
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/codeStyles/
+.idea/misc.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+.idea/httpRequests
+.idea/mvn-settings.xml
 
+# Android Profiling
+*.hprof
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IntelliJ
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
+
+# Log/OS Files
+*.log
+
+# Generated files
+*.ap_

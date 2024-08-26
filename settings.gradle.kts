@@ -21,5 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "SocialMediaApp"
 include(":app")
-include(":User")
-include(":Institute")
+include(":user")
+include(":institute")
+include(":auth")

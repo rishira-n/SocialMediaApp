@@ -71,9 +71,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(project(":institute"))
+    implementation(project(":user"))
     // Add these lines to include feature modules
-    implementation (project(":Institute"))
-    implementation( project(":User"))
     //--Compose Navigation--
     implementation(libs.navigation.compose)
     //--Compose argument serialization--

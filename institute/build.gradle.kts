@@ -77,7 +77,7 @@ dependencies {
     kapt(libs.dagger.hilt.compiler)
     //Provides instance of HiltViewModel via hiltViewModel()
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation( project(":User"))
+    implementation(project(":user"))
 }
 // Allow references to generated code
 kapt {
